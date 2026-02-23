@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Cheat Detector Overlay",
+  "version": "1.0",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

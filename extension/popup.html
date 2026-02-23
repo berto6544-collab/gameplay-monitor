@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial; padding: 10px; width: 300px; }
+    button, select { margin-top: 5px; width: 100%; padding: 10px; }
+    pre { white-space: pre-wrap; word-wrap: break-word; max-height: 300px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <button id="start">Start Recording</button>
+  <button id="stop" disabled>Stop & Upload</button>
+
+  <select id="labelSelect">
+    <option value="legit">Legit</option>
+    <option value="aimbot">Aimbot</option>
+    <option value="wallhack">Wallhack</option>
+  </select>
+
+  <pre id="result">Results will appear here</pre>
+  <script src="popup.js"></script>
+</body>
+</html>

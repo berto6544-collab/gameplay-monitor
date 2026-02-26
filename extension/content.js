@@ -11,15 +11,15 @@
   const SERVER = "http://127.0.0.1:8000";
   const CLASSES = ["legit", "aimbot", "wallhack"];
 
-  // ── Prevent double-inject ──────────────────────────────────────────────────
+  // ── Prevent double-inject
   if (document.getElementById("acc-root")) return;
 
-  // ── Inject FFmpeg WASM script ──────────────────────────────────────────────
+  // ── Inject FFmpeg WASM script
   const ffmpegScript = document.createElement("script");
   ffmpegScript.src = "https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js";
   document.head.appendChild(ffmpegScript);
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  // ── State
   let mediaRecorder = null;
   let recordedChunks = [];
   let recordingStream = null;
@@ -29,7 +29,7 @@
   let isMinimized = false;
   let stats = { legit: 0, aimbot: 0, wallhack: 0, total: 0 };
 
-  // ── FFmpeg state ───────────────────────────────────────────────────────────
+  // ── FFmpeg state
   let ffmpegReady = false;
   let ffmpegInstance = null;
 
@@ -42,7 +42,7 @@
     return ffmpegInstance;
   }
 
-  // ── Inject styles ──────────────────────────────────────────────────────────
+  // ── Inject styles
   const style = document.createElement("style");
   style.textContent = `
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
@@ -376,7 +376,7 @@
   `;
   document.head.appendChild(style);
 
-  // ── Build DOM ──────────────────────────────────────────────────────────────
+  // ── Build DOM
   const root = document.createElement("div");
   root.id = "acc-root";
   root.innerHTML = `
@@ -443,7 +443,7 @@
   toastContainer.id = "acc-toast-container";
   document.body.appendChild(toastContainer);
 
-  // ── Element refs ───────────────────────────────────────────────────────────
+  // ── Element refs
   const panel       = document.getElementById("acc-panel");
   const titleDot    = document.getElementById("acc-title-dot");
   const timer       = document.getElementById("acc-timer");
@@ -453,7 +453,7 @@
   const minimizeBtn = document.getElementById("acc-minimize-btn");
   const prediction  = document.getElementById("acc-prediction");
 
-  // ── Toast ──────────────────────────────────────────────────────────────────
+  // ── Toast
   function toast(msg, type = "info", duration = 3500) {
     const el = document.createElement("div");
     el.className = `acc-toast ${type}`;
@@ -465,7 +465,7 @@
     }, duration);
   }
 
-  // ── Timer ──────────────────────────────────────────────────────────────────
+  // ── Timer
   function startTimer() {
     elapsedSeconds = 0;
     updateTimerDisplay();
@@ -486,7 +486,7 @@
     timer.textContent = `${m}:${s}`;
   }
 
-  // ── Dataset stats ──────────────────────────────────────────────────────────
+  // ── Dataset stats
   async function refreshStats() {
     try {
       const res = await fetch(`${SERVER}/dataset_stats`);
@@ -501,7 +501,7 @@
     } catch (_) { /* server might not be running yet */ }
   }
 
-  // ── Label selection ────────────────────────────────────────────────────────
+  // ── Label selection
   document.getElementById("acc-label-btns").addEventListener("click", e => {
     const btn = e.target.closest(".acc-label-btn");
     if (!btn) return;
@@ -510,14 +510,14 @@
     btn.classList.add("active");
   });
 
-  // ── Minimize toggle ────────────────────────────────────────────────────────
+  // ── Minimize toggle
   minimizeBtn.addEventListener("click", () => {
     isMinimized = !isMinimized;
     panel.classList.toggle("minimized", isMinimized);
     minimizeBtn.textContent = isMinimized ? "▴" : "▾";
   });
 
-  // ── Drag to reposition ─────────────────────────────────────────────────────
+  // ── Drag to reposition
   let dragging = false, dragOffX = 0, dragOffY = 0;
   document.getElementById("acc-header").addEventListener("mousedown", e => {
     if (e.target === minimizeBtn) return;
@@ -535,7 +535,7 @@
   });
   document.addEventListener("mouseup", () => { dragging = false; });
 
-  // ── Recording ─────────────────────────────────────────────────────────────
+  // ── Recording
   recordBtn.addEventListener("click", async () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
       stopRecording();
@@ -615,7 +615,7 @@
     return candidates.find(t => MediaRecorder.isTypeSupported(t)) || "";
   }
 
-  // ── MP4 conversion via FFmpeg WASM ─────────────────────────────────────────
+  // ── MP4 conversion via FFmpeg WASM
   async function buildMp4Blob() {
     const rawMime = (mediaRecorder?.mimeType || "video/webm").split(";")[0];
     const rawBlob = new Blob(recordedChunks, { type: rawMime });
@@ -673,7 +673,7 @@
     return `${suffix}_${Date.now()}.mp4`;
   }
 
-  // ── Upload ─────────────────────────────────────────────────────────────────
+  // ── Upload──────
   uploadBtn.addEventListener("click", async () => {
     if (!recordedChunks.length) return;
     uploadBtn.disabled = true;
@@ -704,7 +704,7 @@
     }
   });
 
-  // ── Predict ────────────────────────────────────────────────────────────────
+  // ── Predict
   predictBtn.addEventListener("click", async () => {
     if (!recordedChunks.length) return;
     predictBtn.disabled = true;
@@ -752,7 +752,7 @@
     toast(`Verdict: ${data.prediction.toUpperCase()} (${Math.round(data[data.prediction] * 100)}% confidence)`, type, 5000);
   }
 
-  // ── Init ───────────────────────────────────────────────────────────────────
+  // ── Init
   refreshStats();
   setInterval(refreshStats, 30_000); // refresh every 30s
 })();
